@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const { celebrate, Joi } = require('celebrate');
 const { errors } = require('celebrate');
@@ -22,17 +23,18 @@ mongoose.connect(mongobd, {
   useUnifiedTopology: true,
 });
 
+app.use(cors());
 app.use(requestLogger);
 app.use(helmet());
 app.use(bodyParser.json());
-app.post('/api/signup', celebrate({
+app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().min(5).email(),
     password: Joi.string().required(),
     name: Joi.string().required().min(2).max(30),
   }).unknown(true),
 }), createUser);
-app.post('/api/signin', celebrate({
+app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().min(5).email(),
     password: Joi.string().required(),
